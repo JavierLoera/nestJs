@@ -22,8 +22,8 @@ let TaskController = class TaskController {
     constructor(taskService) {
         this.taskService = taskService;
     }
-    getTasks() {
-        return this.taskService.getTasks();
+    getTasks(userid) {
+        return this.taskService.getTasks(userid);
     }
     getTaskByid(idTask) {
         return this.taskService.getTaskId(idTask);
@@ -34,21 +34,23 @@ let TaskController = class TaskController {
     AddTask(body) {
         return this.taskService.addTask(body);
     }
-    deleteTask(idTask) {
-        return this.taskService.deleteTask(idTask);
+    deleteTask(idTask, userId) {
+        return this.taskService.deleteTask(idTask, userId);
     }
-    UpdateTask(idTask, body) {
-        return this.taskService.UpdateTask(idTask, body);
+    UpdateTask(idTask, userId, body) {
+        return this.taskService.UpdateTask(idTask, body, userId);
     }
 };
 __decorate([
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, common_1.Get)(),
+    (0, common_1.Get)(':userid'),
+    __param(0, (0, common_1.Param)('userid', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], TaskController.prototype, "getTasks", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Get)(':idTask'),
     __param(0, (0, common_1.Param)('idTask', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
@@ -56,6 +58,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TaskController.prototype, "getTaskByid", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Post)('changestate:idTask'),
     __param(0, (0, common_1.Param)('idTask', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
@@ -63,6 +66,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TaskController.prototype, "changeTaskState", null);
 __decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Post)('addtask'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -70,18 +74,22 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], TaskController.prototype, "AddTask", null);
 __decorate([
-    (0, common_1.Delete)(':idTask'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Delete)(':idTask/:userId'),
     __param(0, (0, common_1.Param)('idTask', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", void 0)
 ], TaskController.prototype, "deleteTask", null);
 __decorate([
-    (0, common_1.Patch)(':idTask'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Patch)(':idTask/:userId'),
     __param(0, (0, common_1.Param)('idTask', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Body)()),
+    __param(1, (0, common_1.Param)('userId', common_1.ParseIntPipe)),
+    __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, update_task_dto_1.UpdateTaskDto]),
+    __metadata("design:paramtypes", [Number, Number, update_task_dto_1.UpdateTaskDto]),
     __metadata("design:returntype", void 0)
 ], TaskController.prototype, "UpdateTask", null);
 TaskController = __decorate([

@@ -10,31 +10,33 @@ export class TaskService {
     @Inject('TASK_REPOSITORY')
     private taskRepository: typeof Task,
   ) {}
-  async getTasks(): Promise<Task[]> {
-    const tasks = await this.taskRepository.findAll();
+  async getTasks(userid: number): Promise<Task[]> {
+    const tasks = await this.taskRepository.findAll({
+      where: { userId: userid },
+    });
     return tasks;
   }
-  async getTaskId(idTask: number):Promise<Task> {
+  async getTaskId(idTask: number): Promise<Task> {
     const task = await Task.findOne({ where: { id: idTask } });
     return task;
   }
 
-  async changeStateCompleted(idTask:number){
+  async changeStateCompleted(idTask: number) {
     const task = await Task.findOne({ where: { id: idTask } });
-    task.state=state.completed;
-    task.save()
+    task.state = state.completed;
+    task.save();
   }
   async addTask(task: CreateTaskDto) {
     task.state = state.active;
     return await this.taskRepository.create(task);
   }
 
-  async deleteTask(id: number) {
-    return await this.taskRepository.destroy({ where: { id } });
+  async deleteTask(id: number, userId: number) {
+    return await this.taskRepository.destroy({ where: { id, userId: userId } });
   }
 
-  async UpdateTask(id: number, task: UpdateTaskDto) {
+  async UpdateTask(id: number, task: UpdateTaskDto, userId: number) {
     task.state = state.active;
-    return await this.taskRepository.update(task, { where: { id } });
+    return await this.taskRepository.update(task, { where: { id, userId } });
   }
 }

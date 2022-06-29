@@ -19,17 +19,12 @@ let jwtStrategy = class jwtStrategy extends (0, passport_1.PassportStrategy)(pas
         super({
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: 'dhdhfhjhdsfj',
+            secretOrKey: process.env.JWTKEY,
         });
         this.userService = userService;
     }
     async validate(payload) {
         return { sub: payload.sub, email: payload.email };
-        const user = await this.userService.findOneById(payload.id);
-        if (!user) {
-            throw new common_1.UnauthorizedException('You are not authorized to perform the operation');
-        }
-        return payload;
     }
 };
 jwtStrategy = __decorate([

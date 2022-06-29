@@ -21,14 +21,7 @@ export const databaseProviders = [
         default:
           config = databaseConfig.development;
       }
-      config = {
-        username: 'root',
-        password: '',
-        database: 'nest',
-        host: 'localhost',
-        port: 3306,
-        dialect: 'mysql',
-      };
+   
       const sequelize = new Sequelize(config);
       sequelize.addModels([Task, User]);
       await sequelize.sync();

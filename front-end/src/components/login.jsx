@@ -1,13 +1,18 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import {apis} from '../apis/fetch'
+import {login} from "../store/userslice"
+import {useDispatch} from "react-redux"
+
 
 function LoginFormik() {
+  const [returnlogin,setReturnLogin]=useState({})
   const initialCredentials = {
     email: "",
     password: "",
   };
-
+const dispatch= useDispatch()
   const loginSchema = Yup.object().shape({
     email: Yup.string()
       .email("Invalid email format")
@@ -15,15 +20,19 @@ function LoginFormik() {
     password: Yup.string().required("Password is required"),
   });
 
+  const handleclick=()=>{
+    dispatch(login(returnlogin))
+  }
+
   return (
+  
     <div>
       <h4>Login </h4>
       <Formik
         initialValues={initialCredentials}
         validationSchema={loginSchema}
         onSubmit={async (values) => {
-          await new Promise((r) => setTimeout(r, 500));
-          alert(JSON.stringify(values, null, 2));
+          apis.login(values).then((values)=>setReturnLogin(values)).catch(setReturnLogin(values))
         }}
       >
         {({ errors, touched }) => (
@@ -46,6 +55,7 @@ function LoginFormik() {
           </Form>
         )}
       </Formik>
+      <button onClick={handleclick()}></button>
     </div>
   );
 }

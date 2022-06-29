@@ -6,20 +6,16 @@ import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
 import { jwtStrategy } from './jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './auth.constants';
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
-    // JwtModule.register({
-    //   secret: process.env.JWTKEY,
-    //   signOptions: { expiresIn: process.env.TOKEN_EXPIRATION },
-    // }),
     JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
-    }),
+      secret: process.env.JWTKEY,
+      signOptions: { expiresIn: process.env.TOKEN_EXPIRATION },
+    })
+ 
   ],
   providers: [AuthService, LocalStrategy, jwtStrategy],
   controllers: [AuthController],

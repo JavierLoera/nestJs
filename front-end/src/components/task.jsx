@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Task } from "../models/task.class";
-import "../styles/task.scss";
+import "../styles/task.css";
 
 const TaskComponent = ({ task, complete, remove }) => {
   const taskCompleted = {

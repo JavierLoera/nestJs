@@ -5,5 +5,4 @@ export declare class UserService {
     constructor(userRepository: typeof User);
     create(user: CreateUserDto): Promise<User>;
     findOneByEmail(email: string): Promise<User>;
-    findOneById(id: number): Promise<User>;
 }

@@ -6,7 +6,6 @@ import {
   Model,
   PrimaryKey,
   HasMany,
-  ForeignKey,
   DataType
 } from 'sequelize-typescript';
 import { Iuser } from 'src/interfaces/userInterface';

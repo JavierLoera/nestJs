@@ -4,6 +4,9 @@ declare const jwtStrategy_base: new (...args: any[]) => Strategy;
 export declare class jwtStrategy extends jwtStrategy_base {
     private readonly userService;
     constructor(userService: UserService);
-    validate(payload: any): Promise<any>;
+    validate(payload: any): Promise<{
+        sub: any;
+        email: any;
+    }>;
 }
 export {};

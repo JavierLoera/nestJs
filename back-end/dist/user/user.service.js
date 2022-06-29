@@ -24,9 +24,6 @@ let UserService = class UserService {
     async findOneByEmail(email) {
         return await this.userRepository.findOne({ where: { email } });
     }
-    async findOneById(id) {
-        return await this.userRepository.findOne({ where: { id } });
-    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

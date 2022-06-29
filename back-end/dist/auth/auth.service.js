@@ -30,6 +30,21 @@ let AuthService = class AuthService {
         this.userService = userService;
         this.jwtService = jwtService;
     }
+    async comparePassword(enteredPassword, dbPassword) {
+        const match = await bcrypt.compare(enteredPassword, dbPassword);
+        return match;
+    }
+    async hashPassword(password) {
+        const hash = await bcrypt.hash(password, 10);
+        return hash;
+    }
+    async generateToken(user) {
+        const token = await this.jwtService.signAsync({
+            email: user.email,
+            sub: user.id,
+        });
+        return token;
+    }
     async validateUser(email, pass) {
         const user = await this.userService.findOneByEmail(email);
         if (!user) {
@@ -43,18 +58,42 @@ let AuthService = class AuthService {
         return result;
     }
     async login(user) {
-        const payload = { email: user.email, sub: user.id };
-        return { access_token: this.jwtService.sign(payload) };
-        let userD = await this.userService.findOneByEmail(user.email);
-        const { id, email } = userD;
-        const token = await this.generateToken(user);
-        return { user: { id, email }, token };
+        try {
+            let userD = await this.userService.findOneByEmail(user.email);
+            if (!userD) {
+                throw Error('No existe una cuenta con ese email');
+            }
+            const result = await this.validateUser(user.email, user.password);
+            if (result != null) {
+                const { email, id } = userD['dataValues'];
+                const token = await this.generateToken(result);
+                return {
+                    user: { email, id },
+                    access_token: token,
+                };
+            }
+            else {
+                throw new Error('Contrasena o usuario incorrecto');
+            }
+        }
+        catch (error) {
+            return error.message;
+        }
+    }
+    async getDataUser(token) {
+        const data = this.jwtService.verify(token);
+        const { iat, exp, email, sub } = data;
+        const newIat = new Date(0);
+        newIat.setUTCSeconds(iat);
+        const newExp = new Date(exp);
+        newExp.setUTCSeconds(iat);
+        return { email, sub, newIat, newExp };
     }
     async create(user) {
         try {
             const userDb = await this.userService.findOneByEmail(user.email);
             if (userDb)
-                throw Error;
+                throw new Error('Ye existe un usuario con esa cuenta');
             else {
                 const pass = await this.hashPassword(user.password);
                 const newUser = await this.userService.create(Object.assign(Object.assign({}, user), { password: pass }));
@@ -64,20 +103,8 @@ let AuthService = class AuthService {
             }
         }
         catch (error) {
-            return error;
+            return error.message;
         }
-    }
-    async comparePassword(enteredPassword, dbPassword) {
-        const match = await bcrypt.compare(enteredPassword, dbPassword);
-        return match;
-    }
-    async hashPassword(password) {
-        const hash = await bcrypt.hash(password, 10);
-        return hash;
-    }
-    async generateToken(user) {
-        const token = await this.jwtService.signAsync(user);
-        return token;
     }
 };
 AuthService = __decorate([

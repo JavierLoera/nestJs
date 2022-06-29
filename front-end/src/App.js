@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -8,9 +9,15 @@ import {
 import NotFoundPage from "../src/pages/404/NotFoundPage.jsx";
 import LoginFormik from "./components/login";
 import DashboardPage from "./dashboard/DashboardPage.jsx";
+import { useSelector } from "react-redux";
 
 function App() {
   let loggedIn = true;
+  const list = useSelector((store) => store.user);
+  localStorage.setItem("token", list.access_token);
+
+  const token = localStorage.getItem("token");
+
   return (
     <Router>
       <Switch>

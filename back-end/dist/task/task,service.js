@@ -20,8 +20,10 @@ let TaskService = class TaskService {
     constructor(taskRepository) {
         this.taskRepository = taskRepository;
     }
-    async getTasks() {
-        const tasks = await this.taskRepository.findAll();
+    async getTasks(userid) {
+        const tasks = await this.taskRepository.findAll({
+            where: { userId: userid },
+        });
         return tasks;
     }
     async getTaskId(idTask) {
@@ -37,12 +39,12 @@ let TaskService = class TaskService {
         task.state = taskInterface_1.state.active;
         return await this.taskRepository.create(task);
     }
-    async deleteTask(id) {
-        return await this.taskRepository.destroy({ where: { id } });
+    async deleteTask(id, userId) {
+        return await this.taskRepository.destroy({ where: { id, userId: userId } });
     }
-    async UpdateTask(id, task) {
+    async UpdateTask(id, task, userId) {
         task.state = taskInterface_1.state.active;
-        return await this.taskRepository.update(task, { where: { id } });
+        return await this.taskRepository.update(task, { where: { id, userId } });
     }
 };
 TaskService = __decorate([

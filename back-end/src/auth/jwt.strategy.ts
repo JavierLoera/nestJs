@@ -9,19 +9,12 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: 'dhdhfhjhdsfj',
-    });
+      secretOrKey: process.env.JWTKEY,
+})
   }
   async validate(payload: any) {
     // check if user in the token actually exist
     return { sub: payload.sub, email: payload.email };
 
-    const user = await this.userService.findOneById(payload.id);
-    if (!user) {
-      throw new UnauthorizedException(
-        'You are not authorized to perform the operation',
-      );
-    }
-    return payload;
   }
 }
